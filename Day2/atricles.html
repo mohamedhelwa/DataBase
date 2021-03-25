@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="#"><b>Magazine</b></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="./departments.html">Departments</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="./atricles.html">Articles</a>
+            </li>
+            </ul>
+        </div>
+    </nav>
+    <br>
+    <div class="container">
+        <div class="form-group row">
+            <label for="ArticleID" class="col-sm-2 col-form-label">Article ID</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" readonly id="ArticleID" placeholder="Article ID">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="ArticleTitle" class="col-sm-2 col-form-label">Article Title</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="ArticleTitle" placeholder="Article Title">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="ArticleContent">Article Content</label>
+            <textarea class="form-control" id="ArticleContent" placeholder="Article Content" rows="3"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="AtDepartment">At Department</label>
+            <select class="form-control" id="AtDepartment">
+            </select>
+          </div>
+        
+        <input type="button" value="Save" id="save" onclick="writeData()" class="btn btn-primary"/>
+
+
+        <br><br><br>
+
+        <table id="data" class="table table-hover">
+            <thead>
+                <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Content</th>
+                <th scope="col">Department Name</th>
+                <th scope="col">#</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    
+    
+    <script>
+        // My web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyD7QKX6JNX7NEg_eUixUSuZpxUr8pN3b0Q",
+            authDomain: "iti-dbtest.firebaseapp.com",
+            databaseURL: "https://iti-dbtest-default-rtdb.firebaseio.com",
+            projectId: "iti-dbtest",
+            storageBucket: "iti-dbtest.appspot.com",
+            messagingSenderId: "150317720917",
+            appId: "1:150317720917:web:19e8d748a0982905ea7bdc"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        //starting with realtime database
+        var database = firebase.database();
+
+        $( document ).ready(function() {
+            LoadDepartments();
+            LoadArticles();
+        });
+
+        function clearFields() {
+            $("#ArticleID").val("");
+            $("#ArticleTitle").val("");
+            $("#ArticleContent").val("");
+            $("#AtDepartment").val("");
+        }
+
+        function LoadDepartments(){
+            // Load departments Data
+            var departments = firebase.database().ref('departments');
+
+            departments.on('value', (snapshot) => {
+                const data = snapshot.val();
+
+                $("#AtDepartment").empty();
+
+                console.log(data)
+
+                for (var item in data) {
+                    var option = `<option value="${item}">${data[item].name}</option>`;
+                    $("#AtDepartment").append(option);
+                }
+            }); 
+            clearFields();
+        }
+        
+        function LoadArticles() {
+            //Load Articles Data
+            var articles = firebase.database().ref('articles');
+
+            articles.on('value', (snapshot) => {
+                const data = snapshot.val();
+
+                console.log(data);
+                $("#data>tbody").empty();
+                for (var item in data) {
+                    var row = `<tr>
+                        <td>${data[item].title}</td>
+                        <td>${data[item].content}</td>
+                        <td>${data[item].departmentName}</td>
+                        <td>
+                            <input type="button" class="btn btn-info" value="Update" onclick="Update('${item}','${data[item].title}','${data[item].content}','${data[item].departmentName}')">
+                            <input type="button" class="btn btn-danger" value="Delete" onclick="Delete('${item}')">
+                        </td>
+                    </tr>`;
+                    $("#data>tbody").append(row);
+                } 
+            });
+            clearFields();
+        }
+        
+        function writeData() {
+            var articleID = $("#ArticleID").val();
+            var articleTitle = $("#ArticleTitle").val();
+            var articleContent = $("#ArticleContent").val();
+            var deptName = $("#AtDepartment option:selected").text();
+
+            if(articleID == "")
+            {
+                firebase.database().ref().child('articles').push({
+                    title: articleTitle,
+                    content: articleContent,
+                    departmentName: deptName
+                });
+            }
+            else
+            {
+                var updates = {};
+                updates['/articles/' + articleID] = {title: articleTitle, content: articleContent, departmentName: deptName};
+                firebase.database().ref().update(updates);
+            }
+            clearFields();
+        }
+
+        function Update(id, title, content, departmentName)
+        {
+            $("#ArticleID").val(id);
+            $("#ArticleTitle").val(title);
+            $("#ArticleContent").val(content);
+            $("#AtDepartment option:selected").val(departmentName);
+        }
+
+        function Delete(id)
+        {
+            var confirmed = confirm("Are you sure you want to delete this Article?");
+            if(confirmed){
+                var updates = {};
+                updates['/articles/' + id] = null;
+                firebase.database().ref().update(updates);
+            }
+        }
+
+    </script>
+</body>
+</html>

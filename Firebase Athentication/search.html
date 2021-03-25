@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="./index.html"><b>Magazine (FireStore)</b></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="./departments.html">Departments</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./articles.html">Articles</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="./search.html">Search</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <br>
+    <div class="container">
+    
+        <div class="form-group row">
+            <h2>Search With</h2>
+            <hr>
+            <br>
+        </div>
+        
+
+        <div class="form-group row">
+            <label for="FieldName">Field:</label>
+            <select class="form-control" style="margin-left: 6.7%; width: 20.8%;" id="FieldName">
+                <option value="title">Title</option>
+                <option value="chars">Number Of Characters</option>
+                <option value="content">Content</option>
+                <option value="departmentName">Department Name</option>
+
+            </select>
+        </div>
+
+        <div class="form-group row">
+            <label for="Comparison">Comparison:</label>
+            <select class="form-control" style="margin-left: 2%; width: 20.9%;" id="Comparison">
+                <option value="==" > = </option>
+                <option value=">" > > </option>
+                <option value="<" > < </option>
+                <option value=">="> >= </option>
+                <option value="<="> <= </option>
+                <option value="!="> != </option>
+            </select>
+        </div>
+
+        <div class="form-group row">
+            <label for="Values">Value:</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="Values" style="margin-left: 6%; width: 26%;" placeholder="Value">
+            </div>
+        </div>
+        
+        <input type="button" value="Search" id="search" style="margin-left: 13.5%;" onclick="Search()" class="btn btn-success"/>        
+    
+
+        <br><br><br>
+
+        <table id="data" class="table table-hover">
+            <thead>
+                <tr>
+                <th scope="col">Article ID</th>
+                <th scope="col">Title</th>
+                <th scope="col">Num. of Chars.</th>
+                <th scope="col">Content</th>
+                <th scope="col">Department Name</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    
+    
+    <script>
+        // My web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyD7QKX6JNX7NEg_eUixUSuZpxUr8pN3b0Q",
+            authDomain: "iti-dbtest.firebaseapp.com",
+            databaseURL: "https://iti-dbtest-default-rtdb.firebaseio.com",
+            projectId: "iti-dbtest",
+            storageBucket: "iti-dbtest.appspot.com",
+            messagingSenderId: "150317720917",
+            appId: "1:150317720917:web:19e8d748a0982905ea7bdc"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        var db = firebase.firestore();
+
+
+        // Load data to the page
+        $( document ).ready(function() {
+            clearFields();
+        });
+
+        function clearFields() {
+            $("#Values").val("");
+        }
+        
+        
+        
+
+        function Search(){
+            var field = $("#FieldName option:selected").val();
+            var comparisonTxt = $("#Comparison option:selected").val();
+            var queryValue = $("#Values").val();
+
+
+            if(field == "chars"){
+                queryValue = parseInt(queryValue);
+            }
+
+            db.collection("articles").where(field, comparisonTxt, queryValue).get().then(function(querySnapshot){
+
+                querySnapshot.forEach(function(doc){
+                    $("#data>tbody").empty();
+                    querySnapshot.docChanges().forEach(function(change){
+                        var row = `<tr>
+                                <td>${change.doc.id}</td>
+                                <td>${change.doc.data().title}</td>
+                                <td>${change.doc.data().chars}</td>
+                                <td>${change.doc.data().content}</td>
+                                <td>${change.doc.data().departmentName}</td>
+                            </tr>`;
+                        $("#data>tbody").append(row);
+                    })
+                })
+            });
+            clearFields();
+        }
+        
+    </script>
+</body>
+</html>

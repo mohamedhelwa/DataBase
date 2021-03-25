@@ -1,0 +1,296 @@
+// Create MyMagazine Mongo DataBase
+use MyMagazine;
+
+
+// Insert Data into the Journalists Collection
+db.Journalists.insert([
+    {
+        name: "journalist1",
+        age: 25,
+        address: "giza",
+        phone: "012",
+        department_name: "news"
+    },
+    {
+        name: "journalist2",
+        age: 26,
+        address: "cairo",
+        phone: "011",
+        department_name: "sport"
+    },
+    {
+        name: "journalist3",
+        age: 27,
+        address: "suez",
+        phone: "012",
+        department_name: "art"
+    },
+    {
+        name: "journalist4",
+        age: 28,
+        address: "alex",
+        phone: "013",
+        department_name: "sport"
+    },
+    {
+        name: "journalist5",
+        age: 29,
+        address: "assuit",
+        phone: "014",
+        department_name: "art"
+    },
+    {
+        name: "journalist6",
+        age: 35,
+        address: "sohag",
+        phone: "015",
+        department_name: "art"
+    },
+    {
+        name: "journalist7",
+        age: 45,
+        address: "giza",
+        phone: "016",
+        department_name: "news"
+    },
+    {
+        name: "journalist8",
+        age: 55,
+        address: "minia",
+        phone: "017",
+        department_name: "art"
+    },
+    {
+        name: "journalist9",
+        age: 50,
+        address: "cairo",
+        phone: "018",
+        department_name: "sport"
+    },
+    {
+        name: "journalist10",
+        age: 49,
+        address: "aswan",
+        phone: "020",
+        department_name: "news"
+    }
+]);
+
+
+// Insert Data into the Articles Collection
+
+db.Articles.insert([
+    {
+        title: "article1",
+        description: "news article bla",
+        date: "12-12-2018",
+        department_name: "news"
+    },
+    {
+        title: "article2",
+        description: "art article bla bla",
+        date: "03-07-2020",
+        department_name: "art"
+    },
+    {
+        title: "article3",
+        description: "sport article bla bla bla",
+        date: "01-10-2009",
+        department_name: "sport"
+    },
+    {
+        title: "article4",
+        description: "news article bla bla bla",
+        date: "11-07-2011",
+        department_name: "news"
+    },
+    {
+        title: "article5",
+        description: "sport article bla",
+        date: "28-02-2008",
+        department_name: "sport"
+    }
+]);
+
+
+// Insert Data into the Departments Collection
+
+db.Departments.insert([
+    {
+        name: "news",
+        location: "cairo",
+        journalist_id: ObjectId("5fe3cd582411ab0734351e08")
+    },
+    {
+        name: "art",
+        location: "giza",
+        journalist_id: ObjectId("5fe3cd582411ab0734351e0d")
+    },
+    {
+        name: "sport",
+        location: "cairo",
+        journalist_id: ObjectId("5fe3cd582411ab0734351e11")
+    }
+]);
+
+
+// Insert Data into the Visitors Collection
+
+db.Visitors.insert([
+    {
+        name: "visitor1",
+        
+    },
+    {
+        name: "visitor2",
+        
+    },
+    {
+        name: "visitor3",
+        
+    },
+    {
+        name: "visitor4",
+        
+    },
+    {
+        name: "visitor5",
+        
+    }
+]);
+
+
+// Insert Data into the Images Collection
+
+db.Images.insert([
+    {
+        imageURL: "URL1",
+        description: "news image",
+        title: "image1",
+        article_id: ObjectId("5fe3ceabc7a10707341b98b3")
+    },
+    {
+        imageURL: "URL2",
+        description: "art image",
+        title: "image2",
+        article_id: ObjectId("5fe3ceabc7a10707341b98b4")
+    },
+    {
+        imageURL: "URL3",
+        description: "sport image",
+        title: "image3",
+        article_id: ObjectId("5fe3ceabc7a10707341b98b6")
+    }
+]);
+
+
+// Insert Data into the Journalist_Article Collection
+
+db.JournalistArticles.insert([
+    {
+        article_id: ObjectId("5fe3ceabc7a10707341b98b2"),
+        journalist_id: ObjectId("5fe3cd582411ab0734351e0e")
+    },
+    {
+        article_id: ObjectId("5fe3ceabc7a10707341b98b4"),
+        journalist_id: ObjectId("5fe3cd582411ab0734351e0f")
+    },
+    {
+        article_id: ObjectId("5fe3ceabc7a10707341b98b6"),
+        journalist_id: ObjectId("5fe3cd582411ab0734351e08")
+    },
+    {
+        article_id: ObjectId("5fe3ceabc7a10707341b98b3"),
+        journalist_id: ObjectId("5fe3cd582411ab0734351e11")
+    }
+]);
+
+
+
+// Insert Data into the Journalist_Work_Departments Collection
+
+db.JournalistWorkDepartments.insert([
+    {
+        department_name: "news",
+        journalist_id: ObjectId("5fe3cd582411ab0734351e0e")
+    },
+    {
+        department_name: "art",
+        journalist_id: ObjectId("5fe3cd582411ab0734351e11")
+    },
+    {
+        department_name: "sport",
+        journalist_id: ObjectId("5fe3cd582411ab0734351e08")
+    }
+]);
+
+
+
+// Insert Data into the Visitor_Comment_Articles Collection
+
+db.VisitorCommentArticles.insert([
+    {
+        comment: "great",
+        article_id: ObjectId("5fe3ceabc7a10707341b98b6"),
+        visitor_id: ObjectId("5fe3d0a1d529d807344c6ade")
+    },
+    {
+        comment: "bad news",
+        article_id: ObjectId("5fe3ceabc7a10707341b98b2"),
+        visitor_id: ObjectId("5fe3d0a1d529d807344c6ae2")
+    },
+    {
+        comment: "good job",
+        article_id: ObjectId("5fe3ceabc7a10707341b98b4"),
+        visitor_id: ObjectId("5fe3d0a1d529d807344c6ae1")
+    }
+]);
+
+
+// Retrieve Data from Articles Collection where department_name == "art"
+db.Articles.find({department_name: "art"});
+
+
+// Retrieve Data from Articles Collection where department_name == "sport" && title == "article3"
+db.Articles.find({
+    $and:
+    [
+        {
+            department_name: "sport"
+        },
+        {
+            title: "article3"
+        }
+    ]
+});
+
+
+// Retrieve only the first 7 documents Data from Journalists Collection using limit()
+db.Journalists.find().limit(7);
+
+
+// Retrieve Data from Journalists Collection sorted descending on the age field
+db.Journalists.find().sort({age: -1});
+
+
+// Update Data in the Articles Collection by setting a new title
+db.Articles.update(
+    {
+        title: "article3"
+    },
+    {
+        $set: 
+        {
+            title: "updated article3"
+        }
+    },
+    {
+        multi: true
+    }
+);
+
+
+// Delete Data from Journalists Collection where name == "journalist9"
+db.Journalists.remove({
+    name: "journalist9"
+});

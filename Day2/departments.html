@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Departments</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="#"><b>Magazine</b></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="./departments.html">Departments</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="./atricles.html">Articles</a>
+            </li>
+            </ul>
+        </div>
+    </nav>
+    <br>
+    <div class="container">
+        <input type="hidden">
+        <div class="form-group row">
+            <label for="depName" class="col-sm-2 col-form-label">Department Name:</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="deptName" placeholder="Department Name">
+            </div>
+        </div>
+        <input type="button" value="Add"  onclick="Save(); Load();" class="btn btn-primary"/>
+
+        <br><br><br>
+
+        <table id="data" class="table table-hover">
+            <thead>
+                <tr>
+                <th scope="col">Department ID</th>
+                <th scope="col">Department Name</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    
+    
+    <script>
+        $( document ).ready(function() {
+            Load();
+            clearFields();
+        });
+
+        function clearFields() {
+            $("#deptName").val("");
+        }
+        
+        //Add new department to the database
+        function Save()
+        {
+            var id = $("#deptID").val();
+            var departmentName = $("#deptName").val();
+
+            var data = {"name": departmentName};
+
+            $.ajax({
+                accept: "application/json",
+                type: 'POST',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: "https://iti-dbtest-default-rtdb.firebaseio.com/departments.json",
+                data: JSON.stringify(data),
+                success:function(data){
+                    console.log(data)
+                    Load();
+                },
+                error:function(){
+                    console.log("false")
+                }
+            });
+
+            clearFields();
+        }
+
+        //Load departments data to the page
+        function Load()
+        {
+            $.ajax({
+                accept: "application/json",
+                type: 'GET',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: "https://iti-dbtest-default-rtdb.firebaseio.com/departments.json",
+                success:function(data){
+                    $("#data>tbody").empty();
+                    console.log(data)
+                    for (var item in data) {
+                        var row = `<tr>
+                            <td>${item}</td>
+                            <td>${data[item].name}</td>
+                        </tr>`;
+                        $("#data>tbody").append(row);
+
+                    }
+                },
+                error:function(){
+                    console.log("failed to load data")
+                }
+            });
+            clearFields();
+        }
+    </script>
+</body>
+</html>
